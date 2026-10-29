@@ -2,11 +2,29 @@ package calculadora;
 
 import java.util.Scanner;
 
+/**
+ * Programa interativo (modo console) para usar a {@link Calculadora}.
+ * <p>
+ * O usuário informa dois números inteiros e a operação. Entradas
+ * inválidas (texto no lugar de número, divisão por zero, operação
+ * desconhecida) geram uma mensagem e o programa continua rodando.
+ * Para sair, digite {@code s} quando for pedido o primeiro número.
+ * </p>
+ *
+ * @author Nicolas Gomes Ferreira
+ * @version 1.0
+ */
 public class Main {
 
+    /** Construtor privado: classe utilitária, não deve ser instanciada. */
     private Main() {
     }
 
+    /**
+     * Ponto de entrada do programa.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
     public static void main(String[] args) {
         Calculadora calculadora = new Calculadora();
         Scanner sc = new Scanner(System.in);

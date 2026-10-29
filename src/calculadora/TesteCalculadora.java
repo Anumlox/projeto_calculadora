@@ -1,16 +1,41 @@
 package calculadora;
 
+/**
+ * Testes unitários da classe {@link Calculadora}.
+ * <p>
+ * Cada teste mostra no console as <b>entradas utilizadas</b>, o
+ * <b>resultado esperado</b> e o <b>resultado obtido</b>, além do status
+ * (PASSOU / FALHOU). Ao final é exibido um resumo. Se algum teste falhar,
+ * o programa termina com código de saída 1.
+ * </p>
+ * <p>
+ * Os testes não dependem de bibliotecas externas: basta compilar e
+ * executar o método {@link #main(String[])}.
+ * </p>
+ *
+ * @author Nicolas Gomes Ferreira
+ * @version 1.0
+ */
 public class TesteCalculadora {
 
+    /** Instância da calculadora que está sendo testada. */
     private static final Calculadora calc = new Calculadora();
 
+    /** Quantidade de testes executados. */
     private static int total = 0;
 
+    /** Quantidade de testes que passaram. */
     private static int passou = 0;
 
+    /** Construtor privado: classe de testes, não deve ser instanciada. */
     private TesteCalculadora() {
     }
 
+    /**
+     * Executa todos os testes e exibe o resumo.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
     public static void main(String[] args) {
         System.out.println("==================================================");
         System.out.println("  TESTES UNITÁRIOS - Calculadora (FinançApp)");
@@ -68,10 +93,24 @@ public class TesteCalculadora {
         }
     }
 
+    /**
+     * Imprime o título de um grupo de testes.
+     *
+     * @param titulo nome do grupo (ex.: "SOMA")
+     */
     private static void secao(String titulo) {
         System.out.println("\n--- " + titulo + " ---");
     }
 
+    /**
+     * Testa uma operação que deve retornar um valor numérico.
+     *
+     * @param descricao descrição do teste
+     * @param a         primeiro número
+     * @param b         segundo número
+     * @param op        operação
+     * @param esperado  resultado esperado
+     */
     private static void testarResultado(String descricao, int a, int b, String op, double esperado) {
         String obtido;
         boolean ok;
@@ -87,6 +126,16 @@ public class TesteCalculadora {
         registrar(descricao, a, b, op, String.valueOf(esperado), obtido, ok);
     }
 
+    /**
+     * Testa uma operação que deve lançar uma exceção com a mensagem informada.
+     *
+     * @param descricao       descrição do teste
+     * @param a               primeiro número
+     * @param b               segundo número
+     * @param op              operação
+     * @param tipoEsperado    classe da exceção esperada
+     * @param mensagemEsperada mensagem esperada na exceção
+     */
     private static void testarErro(String descricao, int a, int b, String op,
                                    Class<? extends RuntimeException> tipoEsperado,
                                    String mensagemEsperada) {
@@ -104,6 +153,16 @@ public class TesteCalculadora {
         registrar(descricao, a, b, op, esperado, obtido, ok);
     }
 
+    /**
+     * Testa o método {@link Calculadora#calcSeguro(int, int, String)}, que deve
+     * devolver a mensagem de erro sem lançar exceção.
+     *
+     * @param descricao        descrição do teste
+     * @param a                primeiro número
+     * @param b                segundo número
+     * @param op               operação
+     * @param mensagemEsperada mensagem que deve ser devolvida
+     */
     private static void testarMensagemSegura(String descricao, int a, int b, String op,
                                              String mensagemEsperada) {
         String obtido;
@@ -119,6 +178,17 @@ public class TesteCalculadora {
         registrar(descricao, a, b, op, mensagemEsperada, obtido, ok);
     }
 
+    /**
+     * Imprime o resultado de um teste e atualiza os contadores.
+     *
+     * @param descricao descrição do teste
+     * @param a         primeiro número
+     * @param b         segundo número
+     * @param op        operação
+     * @param esperado  resultado esperado (texto)
+     * @param obtido    resultado obtido (texto)
+     * @param ok        {@code true} se o teste passou
+     */
     private static void registrar(String descricao, int a, int b, String op,
                                   String esperado, String obtido, boolean ok) {
         total++;
