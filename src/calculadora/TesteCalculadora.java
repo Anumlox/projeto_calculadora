@@ -14,18 +14,18 @@ package calculadora;
  * </p>
  *
  * @author Nicolas Gomes Ferreira
- * @version 1.0
+ * @version 2.0 (refatorada)
  */
 public class TesteCalculadora {
 
     /** Instância da calculadora que está sendo testada. */
-    private static final Calculadora calc = new Calculadora();
+    private static final Calculadora calculadora = new Calculadora();
 
     /** Quantidade de testes executados. */
-    private static int total = 0;
+    private static int testesExecutados = 0;
 
     /** Quantidade de testes que passaram. */
-    private static int passou = 0;
+    private static int testesAprovados = 0;
 
     /** Construtor privado: classe de testes, não deve ser instanciada. */
     private TesteCalculadora() {
@@ -83,14 +83,30 @@ public class TesteCalculadora {
                 Calculadora.MSG_OPERACAO_INVALIDA);
 
         // ---------- RESUMO ----------
-        System.out.println("\n==================================================");
-        System.out.println("  RESUMO: " + passou + " de " + total + " testes passaram"
-                + (passou == total ? "  ✔" : "  ✘"));
-        System.out.println("==================================================");
+        imprimirResumo();
 
-        if (passou != total) {
+        if (!todosAprovados()) {
             System.exit(1);
         }
+    }
+
+    /**
+     * Exibe quantos testes foram executados e quantos passaram.
+     */
+    private static void imprimirResumo() {
+        System.out.println("\n==================================================");
+        System.out.println("  RESUMO: " + testesAprovados + " de " + testesExecutados + " testes passaram"
+                + (todosAprovados() ? "  ✔" : "  ✘"));
+        System.out.println("==================================================");
+    }
+
+    /**
+     * Indica se todos os testes executados foram aprovados.
+     *
+     * @return {@code true} se nenhum teste falhou
+     */
+    private static boolean todosAprovados() {
+        return testesAprovados == testesExecutados;
     }
 
     /**
@@ -113,17 +129,17 @@ public class TesteCalculadora {
      */
     private static void testarResultado(String descricao, int a, int b, String op, double esperado) {
         String obtido;
-        boolean ok;
+        boolean aprovado;
         try {
-            double r = calc.calc(a, b, op);
-            obtido = String.valueOf(r);
-            ok = Double.compare(r, esperado) == 0;
+            double resultado = calculadora.calc(a, b, op);
+            obtido = String.valueOf(resultado);
+            aprovado = Double.compare(resultado, esperado) == 0;
         } catch (RuntimeException e) {
             // Uma exceção aqui significa que o teste falhou
             obtido = e.getClass().getSimpleName() + ": " + e.getMessage();
-            ok = false;
+            aprovado = false;
         }
-        registrar(descricao, a, b, op, String.valueOf(esperado), obtido, ok);
+        registrar(descricao, a, b, op, String.valueOf(esperado), obtido, aprovado);
     }
 
     /**
@@ -141,20 +157,20 @@ public class TesteCalculadora {
                                    String mensagemEsperada) {
         String esperado = tipoEsperado.getSimpleName() + ": " + mensagemEsperada;
         String obtido;
-        boolean ok;
+        boolean aprovado;
         try {
-            double r = calc.calc(a, b, op);
-            obtido = "nenhuma exceção (retornou " + r + ")";
-            ok = false;
+            double resultado = calculadora.calc(a, b, op);
+            obtido = "nenhuma exceção (retornou " + resultado + ")";
+            aprovado = false;
         } catch (RuntimeException e) {
             obtido = e.getClass().getSimpleName() + ": " + e.getMessage();
-            ok = tipoEsperado.isInstance(e) && mensagemEsperada.equals(e.getMessage());
+            aprovado = tipoEsperado.isInstance(e) && mensagemEsperada.equals(e.getMessage());
         }
-        registrar(descricao, a, b, op, esperado, obtido, ok);
+        registrar(descricao, a, b, op, esperado, obtido, aprovado);
     }
 
     /**
-     * Testa o método {@link Calculadora#calcSeguro(int, int, String)}, que deve
+     * Testa o método {@link Calculadora#calcularComTratamento(int, int, String)}, que deve
      * devolver a mensagem de erro sem lançar exceção.
      *
      * @param descricao        descrição do teste
@@ -166,16 +182,16 @@ public class TesteCalculadora {
     private static void testarMensagemSegura(String descricao, int a, int b, String op,
                                              String mensagemEsperada) {
         String obtido;
-        boolean ok;
+        boolean aprovado;
         try {
-            obtido = calc.calcSeguro(a, b, op);
-            ok = mensagemEsperada.equals(obtido);
+            obtido = calculadora.calcularComTratamento(a, b, op);
+            aprovado = mensagemEsperada.equals(obtido);
         } catch (RuntimeException e) {
             // Se chegou aqui, o programa teria sido interrompido
             obtido = "exceção lançada: " + e;
-            ok = false;
+            aprovado = false;
         }
-        registrar(descricao, a, b, op, mensagemEsperada, obtido, ok);
+        registrar(descricao, a, b, op, mensagemEsperada, obtido, aprovado);
     }
 
     /**
@@ -187,19 +203,19 @@ public class TesteCalculadora {
      * @param op        operação
      * @param esperado  resultado esperado (texto)
      * @param obtido    resultado obtido (texto)
-     * @param ok        {@code true} se o teste passou
+     * @param aprovado  {@code true} se o teste passou
      */
     private static void registrar(String descricao, int a, int b, String op,
-                                  String esperado, String obtido, boolean ok) {
-        total++;
-        if (ok) {
-            passou++;
+                                  String esperado, String obtido, boolean aprovado) {
+        testesExecutados++;
+        if (aprovado) {
+            testesAprovados++;
         }
         String opTexto = (op == null) ? "null" : "\"" + op + "\"";
-        System.out.printf("[%02d] %s%n", total, descricao);
+        System.out.printf("[%02d] %s%n", testesExecutados, descricao);
         System.out.println("     Entradas ......... a = " + a + ", b = " + b + ", op = " + opTexto);
         System.out.println("     Resultado esperado " + esperado);
         System.out.println("     Resultado obtido . " + obtido);
-        System.out.println("     Status ........... " + (ok ? "PASSOU ✔" : "FALHOU ✘"));
+        System.out.println("     Status ........... " + (aprovado ? "PASSOU ✔" : "FALHOU ✘"));
     }
 }
