@@ -57,13 +57,13 @@ O método principal é `calc(int a, int b, String op)`, que retorna um `double`:
 
 ### Tratamento de erros
 
-| Situação | Comportamento de `calc(...)` | Comportamento de `calcSeguro(...)` |
+| Situação | Comportamento de `calc(...)` | Comportamento de `calcularComTratamento(...)` |
 |---|---|---|
 | Divisão por zero (`calc(10, 0, "/")`) | Lança `ArithmeticException` | Retorna `"Erro: não é possível dividir por zero."` |
 | Operação inválida (`"%"`, `""`, `null`, `"x"`...) | Lança `IllegalArgumentException` | Retorna `"Erro: operação inválida. Use +, -, * ou /."` |
 | Texto no lugar de número (no `Main`) | — | O `Main` exibe `"Erro: digite apenas números inteiros."` e continua |
 
-Dessa forma, nenhum erro interrompe a execução do programa: o `Main` usa `calcSeguro`, que captura as exceções e devolve a mensagem.
+Dessa forma, nenhum erro interrompe a execução do programa: o `Main` usa `calcularComTratamento`, que captura as exceções e devolve a mensagem.
 
 ## ▶️ Como Executar
 
@@ -117,6 +117,58 @@ Página da classe `Calculadora` (descrição, `@author`, `@version` e atributos)
 Detalhe do método `calc` (`@param`, `@return` e `@throws`):
 
 ![JavaDoc - método calc](imagens/javadoc_metodo_calc.png)
+
+## 🔧 Refatoração (branch `Refatoracao`)
+
+Nesta branch o código foi reorganizado **sem alterar o comportamento** do sistema.
+
+| Técnica | O que foi feito |
+|---|---|
+| **Extração de métodos** | Cada operação virou um método próprio: `somar`, `subtrair`, `multiplicar`, `dividir`; validações extraídas para `validarOperacao` e `validarDivisor`; montagem do texto em `montarExpressao`. No `Main`: `exibirCabecalho`, `lerEntrada` e `processar`. Nos testes: `imprimirResumo` e `todosAprovados`. |
+| **Simplificação de condicionais** | A cadeia de `if / else if` foi substituída por um `switch` com `->`, e o `if/else` aninhado da divisão virou uma cláusula de guarda (`validarDivisor`). |
+| **Melhoria nos nomes** | `a`, `b`, `op`, `r` → `primeiroNumero`, `segundoNumero`, `operacao`, `resultado`; `calcSeguro` → `calcularComTratamento`; `total`/`passou` → `testesExecutados`/`testesAprovados`; `ok` → `aprovado`; `sc` → `leitor`. |
+| **Eliminação de "números mágicos"** | Símbolos das operações viraram constantes documentadas: `SOMA`, `SUBTRACAO`, `MULTIPLICACAO`, `DIVISAO`. |
+| **Organização lógica** | Classe dividida em blocos: constantes → API pública → operações → validações. `Scanner` passou a ser fechado com *try-with-resources*. |
+
+**Antes** (branch `main`):
+```java
+if (op.equals("+")) {
+    r = (double) a + b;
+} else if (op.equals("-")) {
+    ...
+} else if (op.equals("/")) {
+    if (b == 0) {
+        throw new ArithmeticException(MSG_DIVISAO_POR_ZERO);
+    } else {
+        r = (double) a / b;
+    }
+} else {
+    throw new IllegalArgumentException(MSG_OPERACAO_INVALIDA);
+}
+return r;
+```
+
+**Depois** (branch `Refatoracao`):
+```java
+validarOperacao(operacao);
+return switch (operacao) {
+    case SOMA -> somar(primeiroNumero, segundoNumero);
+    case SUBTRACAO -> subtrair(primeiroNumero, segundoNumero);
+    case MULTIPLICACAO -> multiplicar(primeiroNumero, segundoNumero);
+    case DIVISAO -> dividir(primeiroNumero, segundoNumero);
+    default -> throw new IllegalArgumentException(MSG_OPERACAO_INVALIDA);
+};
+```
+
+### Testes reexecutados após a refatoração
+
+Todos os 17 testes foram executados novamente e continuam passando — a saída é idêntica à da branch `main`:
+
+![Testes após a refatoração](imagens/testes_refatoracao.png)
+
+JavaDoc regenerado, já mostrando os métodos extraídos:
+
+![JavaDoc após a refatoração](imagens/javadoc_refatoracao.png)
 
 ## 🌿 Branches e Versionamento
 
