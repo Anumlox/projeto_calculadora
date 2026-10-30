@@ -10,10 +10,10 @@
 **Contexto:** FinançApp  
 **Aluno:** Nicolas Gomes Ferreira  
 **RA:** 251141  
-**Curso:** Análise e Desenvolvimento de Sistemas — Centro Universitário Facens
-**Disciplina:** UX/UI e Testes de Software
-**Professor:** Daniel Ohata
-**Semestre:** 2026.2
+**Curso:** Análise e Desenvolvimento de Sistemas — Centro Universitário Facens  
+**Disciplina:** UX/UI e Testes de Software  
+**Professor:** Daniel Ohata  
+**Semestre:** 2026.2  
 
 ---
 
