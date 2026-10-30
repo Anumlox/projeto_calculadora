@@ -12,7 +12,7 @@
 **RA:** 251141  
 **Curso:** Análise e Desenvolvimento de Sistemas — Centro Universitário Facens  
 **Disciplina:** UX/UI e Testes de Software  
-**Professor:** Nome do professor  
+**Professor:** Daniel Ohata   
 **Semestre:** 2026.2  
 
 ---
